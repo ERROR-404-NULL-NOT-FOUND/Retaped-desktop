@@ -1,4 +1,4 @@
-
+#!/bin/env gjs
 function showError(error){
     console.log(error)
 }
