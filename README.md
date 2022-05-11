@@ -3,7 +3,7 @@ Crappier GTK version of Retaped because someone insisted on having a native clie
 
 ### Installing
 ```sh
-git clone https://github.com/ERROR-404-NULL-NOT-FOUND/Retaped-destkop/
+git clone https://github.com/ERROR-404-NULL-NOT-FOUND/Retaped-desktop/
 cd Retaped-desktop
 mv index.js retaped-desktop #Just renaming it
 chmod +x retaped-desktop
