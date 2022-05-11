@@ -1,6 +1,9 @@
 # Retaped-destkop
 Crappier GTK version of Retaped because someone insisted on having a native client
 
+### Dependencies
+gjs 3.0
+
 ### Installing
 ```sh
 git clone https://github.com/ERROR-404-NULL-NOT-FOUND/Retaped-desktop/
