@@ -1,6 +1,13 @@
 # Retaped-destkop
 Crappier GTK version of Retaped because someone insisted on having a native client
 
+### Installing
+```sh
+git clone https://github.com/ERROR-404-NULL-NOT-FOUND/Retaped-destkop/
+cd Retaped-desktop
+sudo cp index.js /usr/local/bin
+```
+
 ### Features
 - Server list
 - Channel list
