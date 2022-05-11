@@ -7,7 +7,7 @@ git clone https://github.com/ERROR-404-NULL-NOT-FOUND/Retaped-desktop/
 cd Retaped-desktop
 mv index.js retaped-desktop #Just renaming it
 chmod +x retaped-desktop
-sudo cp index.js /usr/local/bin
+sudo cp retaped-desktop /usr/local/bin
 ```
 
 ### Features
