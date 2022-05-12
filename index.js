@@ -15,8 +15,8 @@ Gtk.init(null);
 let win = new Gtk.Window({
     type: Gtk.WindowType.TOPLEVEL,
     title: 'Retaped',
-    default_width: 1920,
-    default_height: 1080,
+    default_width: 600,
+    default_height: 400,
     window_position: Gtk.WindowPosition.CENTER,
 });
 win.title = 'Retaped';
@@ -56,7 +56,7 @@ win.add(loginoe)
 win.show_all();
 
 //Defining global variables
-let thetoken;
+let thetoken="";
 let socket;
 let thechannel;
 let theserver;
@@ -68,17 +68,24 @@ let lastmessage;
 let msgcache=[];
 let msglist=[];
 let reply;
-
 const session=new Soup.Session()
 var _httpSession = new Soup.SessionAsync();
 Soup.Session.prototype.add_feature.call(_httpSession, new Soup.ProxyResolverDefault());
 let soupSyncSession = new Soup.SessionSync();
 
+try{
+let [ok, contents] = GLib.file_get_contents(GLib.get_user_config_dir()+'/retaped-token')
+    thetoken=contents.toString()
+    login()
+}catch(e){}
+
 Gtk.main();
 //Mostly copy-pasted from Retaped (which is a fork of Reduct by DoruDolasu) and then edited to work in GJS
 async function login() {
     try{
-    thetoken=tokeninput.get_buffer().get_text()
+        if(!thetoken){
+            thetoken=tokeninput.get_buffer().get_text()
+        }
     win.remove(loginoe)
     win.add(logged)
     const message = new Soup.Message({
@@ -86,6 +93,9 @@ async function login() {
         uri: Soup.URI.new('wss://ws.revolt.chat')
     });
     session.websocket_connect_async(message, 'origin', [], null, bonfire);
+    if(fetch("https://api.revolt.chat/users/@me")){
+        GLib.file_set_contents(GLib.get_user_config_dir()+'/retaped-token',thetoken)
+    }
     showError("Started websocket")
     loginoe.hidden=true;
     //if (!document.getElementById("inputTheme").value == '') { document.cookie = `theme=${document.getElementById("inputTheme").value};` }
