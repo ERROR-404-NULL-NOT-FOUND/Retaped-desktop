@@ -272,7 +272,7 @@ function sendmessage() {
                 message = message.replace(pings[i], `<@${uIDs[usernames.indexOf(pings[i].replace("@", ""))]}>`)
             }
         }
-            post(`https://api.revolt.chat/channels/${thechannel}/messages`,`{"content":"${message}"}`)
+            showError(post(`https://api.revolt.chat/channels/${thechannel}/messages`,`{"content":"${message.replace('"','\\"')}"}`))
             sendmessagefield.get_buffer().set_text("",-1)
     }
     }
