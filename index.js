@@ -205,6 +205,7 @@ function clearmessages(){
         messages.remove(children[i])
     }
 }
+
 function parsemessage(message) {
     let username = ""
     let content=message.content
@@ -230,20 +231,27 @@ function parsemessage(message) {
             if(msglist.indexOf(message.replies[i])!==-1){
                 replies.add(new Gtk.Label({label: `╔══> ${msgcache[msglist.indexOf(message.replies[i])]}`,halign: Gtk.Align.START}))
             }else{
-                replies.add(new Gtk.Label({label: `╔══> <i>Unloaded message</i>`, useMarkup: true}))
+                replies.add(new Gtk.Label({label: `╔══> <i>Unloaded message</i>`, useMarkup: true,halign: Gtk.Align.START}))
             }
         }
     }
     if(message.replies){
         messages.add(replies)
     }
+    const authorcontainer = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL})
     if(lastmessage!==username){
-        messages.add(new Gtk.Label({
+        authorcontainer.add(new Gtk.Label({
             useMarkup: true,
             label: `<b>${username}</b>`,
             halign: Gtk.Align.START
         }))
     }
+    const replybutton=new Gtk.Button({
+        label: "Reply",
+    })
+    replybutton.connect("clicked", () => {reply=message._id})
+    authorcontainer.add(replybutton)
+    messages.add(authorcontainer)
     messages.add(new Gtk.Label({
         label: content,
         halign: Gtk.Align.START
@@ -269,10 +277,17 @@ function sendmessage() {
         if (message.search(/[ \n]?@[^ ]*/) != -1) {
             pings = /@[^ ]*/[Symbol.match](message)
             for (let i = 0; i < pings.length; i++) {
-                message = message.replace(pings[i], `<@${uIDs[usernames.indexOf(pings[i].replace("@", ""))]}>`)
+                message = message.replace(pings[i], `<@${(uIDs[usernames.indexOf(pings[i].replace("@", ""))])}>`)
             }
         }
-            showError(post(`https://api.revolt.chat/channels/${thechannel}/messages`,`{"content":"${message.replace('"','\\"')}"}`))
+            showError(post(`https://api.revolt.chat/channels/${thechannel}/messages`,
+            `
+            {"content":"${message.replace('"','\\"')}"
+            ${(reply!="") ? `, "replies":
+            [{
+                "id":"${reply}",
+                "mention":false}]` : ""}}`))
+            reply=""
             sendmessagefield.get_buffer().set_text("",-1)
     }
-    }
+}
