@@ -68,6 +68,7 @@ let lastmessage;
 let msgcache=[];
 let msglist=[];
 let reply;
+let theuser;
 const session=new Soup.Session()
 var _httpSession = new Soup.SessionAsync();
 Soup.Session.prototype.add_feature.call(_httpSession, new Soup.ProxyResolverDefault());
@@ -94,7 +95,8 @@ async function login() {
     });
     session.websocket_connect_async(message, 'origin', [], null, bonfire);
     if(fetch("https://api.revolt.chat/users/@me")){
-        GLib.file_set_contents(GLib.get_user_config_dir()+'/retaped-token',thetoken)
+        GLib.file_set_contents(GLib.get_user_config_dir()+'/retaped-token',thetoken);
+        theuser=fetch("https://api.revolt.chat/users/@me")._id
     }
     showError("Started websocket")
     loginoe.hidden=true;
@@ -145,16 +147,12 @@ async function bonfire(_session, res) {
 }
 
  async function getserver(server) {
+    let tmp = new Gtk.Button({label: "DMS"})
+    tmp.connect('clicked', () => {getdms()})
+    servers.add(tmp)
     for (let i = 0; i < server.length; i++) {
         let tmp = new Gtk.Button({
             label: server[i].name,
-            // Set visible to 'true' if you don't want to call button.show() later
-            visible: true,
-            // Another example of constant mapping:
-            //     'Gtk' and 'Align' are taken from the GtkAlign enum,
-            //     'CENTER' from the constant GTK_ALIGN_CENTER
-            valign: Gtk.Align.CENTER,
-            halign: Gtk.Align.CENTER,
         });
         tmp.connect('clicked', () => {theserver=server[i]._id; getchannel()})
         servers.add(tmp)
@@ -175,7 +173,42 @@ function post(url, data){
     message.request_headers.append("x-session-token", thetoken)
     return soupSyncSession.send_message(message);
 }
+function getdms() {
+    children=channels.get_children();
+    for(let i=0;i<children.length;i++){
+        channels.remove(children[i])
+    }
+    dm=fetch(`https://api.revolt.chat/users/dms`)
+    for (let i = 0; i < dm.length; i++) {
+        try {
+            if (dm[i].channel_type == "Group") {
+                let tmp=new Gtk.Button({label:dm[i]["name"]})
+                tmp.connect('clicked', () => {theserver='';
+                clearmessages();
+                thechannel = dm[i]._id;
+                getmessage()})
 
+            channels.add(tmp)
+            } else if(dm[i].channel_type==="DirectMessage"){
+                if (dm[i].recipients[0] == theuser) {
+                    id = dm[i].recipients[1]
+                } else {
+                    id = dm[i].recipients[0]
+                }
+                let tmp=new Gtk.Button({label:getuser(id)})
+                tmp.connect('clicked', () => {theserver='';
+                clearmessages();
+                thechannel = dm[i]._id;
+                getmessage()})
+
+            channels.add(tmp)
+            }
+        } catch (error) {
+            showError(error)
+        }
+        channels.show_all()
+    }
+}
 function getchannel() {
     children=channels.get_children();
     for(let i=0;i<children.length;i++){
@@ -185,9 +218,6 @@ function getchannel() {
     for (let i = 0; i < chann.length; i++) {
             let tmp= new Gtk.Button({
                 label: channelcache[channellist.indexOf(chann[i])].name,
-                visible: true,
-                valign: Gtk.Align.CENTER,
-                halign: Gtk.Align.CENTER
             })
             tmp.connect('clicked', () => {
                 thechannel = chann[i];
@@ -203,6 +233,17 @@ function clearmessages(){
     children=messages.get_children();
     for(let i=0;i<children.length;i++){
         messages.remove(children[i])
+    }
+}
+
+function getuser(id){
+    if(uIDs.indexOf(id)!==-1){
+        return usernames[uIDs.indexOf(id)];
+    }else{
+        data=fetch(`https://api.revolt.chat/users/${id}`);
+        usernames.push(data.username);
+        uIDs.push(id);
+        return data.username
     }
 }
 
@@ -223,7 +264,7 @@ function parsemessage(message) {
     if(content.search(/<@[A-Za-z0-9]{26}>/) != -1) {
         pings = /<@[A-Za-z0-9]{26}>/[Symbol.match](content)
         for (let i = 0; i < pings.length; i++) {
-                content = message.content.replace(pings[i], `@${(uIDs.indexOf(/[A-Za-z0-9]{26}/[Symbol.match][pings[i]][0]) !== -1) ? (usernames[uIDs.indexOf(/[A-Za-z0-9]{26}/[Symbol.match][pings[i]][0])]) : "UnknownUser"}`)
+                content = message.content.replace(pings[i], getuser(/[A-Za-z0-9]{26}/[Symbol.match][pings[i]][0]))
         }
     }
     if(message.replies){
