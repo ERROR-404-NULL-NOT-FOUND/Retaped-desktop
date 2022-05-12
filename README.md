@@ -31,3 +31,11 @@ sudo cp retaped-desktop /usr/local/bin
 ### To do
 - Make channel loading more reliable
 - Make bottom bar actually be wide enough
+
+### Screenshots
+Fullscreen
+![image](https://user-images.githubusercontent.com/76877633/168143211-bf4a16f7-6ee9-421a-85bb-c9407c7c07bc.png)
+Windowed
+![image](https://user-images.githubusercontent.com/76877633/168143301-379951b0-c898-4e7a-ba9e-fe6a83e08323.png)
+Ram usage
+![image](https://user-images.githubusercontent.com/76877633/168143411-302f209c-41a5-4723-8e74-b0b72156c1ef.png)
