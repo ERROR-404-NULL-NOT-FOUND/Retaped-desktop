@@ -14,6 +14,7 @@ sudo cp retaped-desktop /usr/local/bin
 ```
 
 ### Features
+- Token storage
 - Server list
 - Channel list
 - Automatic username rendering/caching
@@ -28,6 +29,5 @@ sudo cp retaped-desktop /usr/local/bin
 - Fething channel data
 
 ### To do
-- Token storage
 - Make channel loading more reliable
 - Make bottom bar actually be wide enough
