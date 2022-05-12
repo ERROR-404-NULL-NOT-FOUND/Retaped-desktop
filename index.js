@@ -221,9 +221,9 @@ function parsemessage(message) {
         username = usernames[uIDs.indexOf(message.author)]
     }
     if(content.search(/<@[A-Za-z0-9]{26}>/) != -1) {
-        pings = /<@[^@<>]{26}>/[Symbol.match](content)
+        pings = /<@[A-Za-z0-9]{26}>/[Symbol.match](content)
         for (let i = 0; i < pings.length; i++) {
-                content = message.content.replace(pings[i], `@${usernames[uIDs.indexOf(/[^@<>]{26}/)[Symbol.match][pings[i]][0]]}`)
+                content = message.content.replace(pings[i], `@${(uIDs.indexOf(/[A-Za-z0-9]{26}/[Symbol.match][pings[i]][0]) !== -1) ? (usernames[uIDs.indexOf(/[A-Za-z0-9]{26}/[Symbol.match][pings[i]][0])]) : "UnknownUser"}`)
         }
     }
     if(message.replies){
