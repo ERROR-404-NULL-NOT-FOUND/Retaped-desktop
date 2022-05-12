@@ -264,7 +264,7 @@ function parsemessage(message) {
     if(content.search(/<@[A-Za-z0-9]{26}>/) != -1) {
         pings = /<@[A-Za-z0-9]{26}>/[Symbol.match](content)
         for (let i = 0; i < pings.length; i++) {
-                content = message.content.replace(pings[i], getuser(/[A-Za-z0-9]{26}/[Symbol.match][pings[i]][0]))
+                content = message.content.replace(pings[i], '@'+getuser(/[A-Za-z0-9]{26}/[Symbol.match](pings[i])[0]))
         }
     }
     if(message.replies){
