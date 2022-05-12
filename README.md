@@ -21,10 +21,10 @@ sudo cp retaped-desktop /usr/local/bin
 - Reply rendering
 - Masquerade rendering
 - Websocket events
+- Replying to messages
 
 ### Features that probably won't be added
 - Any type of image loading
-- Replying to messages
 - Fetching user profile
 - Fething channel data
 
